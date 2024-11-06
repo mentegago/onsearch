@@ -1,0 +1,195 @@
+/* styles.css */
+
+/* Apply the Plus Jakarta Sans font */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  h1 {
+    text-align: center;
+    color: #ff69b4;
+  }
+  
+  .search-filters {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  #search-input {
+    width: 100%;
+    max-width: 500px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  .filters {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .filter-category,
+  .filter-level {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  label {
+    font-weight: 600;
+  }
+  
+  select {
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+  }
+  
+  #song-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .song-item {
+    display: flex;
+    background-color: #2a2a2a;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  
+  .song-image {
+    flex: 0 0 150px;
+    padding: 10px;
+  }
+  
+  .song-image img {
+    width: 130px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+  .song-info {
+    flex: 1;
+    padding: 15px;
+  }
+  
+  .song-info h2 {
+    margin: 0;
+    color: #ff69b4;
+    font-size: 20px;
+  }
+  
+  .song-info p {
+    margin: 5px 0;
+  }
+  
+  .song-info p.romaji {
+    font-style: italic;
+    color: #dddddd;
+  }
+  
+  .song-levels {
+    margin-top: 10px;
+  }
+  
+  .song-levels span {
+    display: inline-block;
+    background-color: #444;
+    color: #ffffff;
+    padding: 3px 8px;
+    border-radius: 5px;
+    margin-right: 5px;
+    font-size: 14px;
+  }
+  
+  .request-button {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #ff69b4;
+    color: #1a1a1a;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+  }
+  
+  .request-button:hover {
+    background-color: #ff85c1;
+  }
+  
+  #popup-notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #ff69b4;
+    color: #1a1a1a;
+    padding: 15px;
+    border-radius: 5px;
+  }
+  
+  .hidden {
+    display: none;
+  }
+  
+  /* Modal Styles */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    position: relative;
+    background-color: #1a1a1a;
+    margin: 50px auto;
+    padding: 20px;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 10px;
+    color: #fff;
+    overflow-y: auto;
+    max-height: 80vh;
+  }
+  
+  .modal-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .modal-close:hover {
+    color: #ff69b4;
+  }
+  
+  .modal-content pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  

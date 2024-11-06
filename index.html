@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>O.N.S.E.A.R.C.H.</title>
+  <!-- Include Plus Jakarta Sans font -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>O.N.S.E.A.R.C.H.</h1>
+    <div class="search-filters">
+      <input type="text" id="search-input" placeholder="Search by title, artist, or osr code">
+      <div class="filters">
+        <div class="filter-category">
+          <label for="category-select">Category:</label>
+          <select id="category-select">
+            <option value="">All Categories</option>
+          </select>
+        </div>
+        <div class="filter-level">
+          <label for="level-select">Level:</label>
+          <select id="level-select">
+            <option value="">All Levels</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div id="song-list"></div>
+  </div>
+
+  <!-- Popup Notification -->
+  <div id="popup-notification" class="hidden">
+    <p id="popup-message"></p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
