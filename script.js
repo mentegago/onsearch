@@ -2,6 +2,8 @@
 
 let songs = [];
 let filteredSongs = [];
+let debounceTimer;
+let isFiltering = false;
 
 async function fetchSongs() {
   try {
@@ -69,10 +71,22 @@ function initializeFilters() {
     levelSelect.appendChild(option);
   });
 
-  // Add event listeners
-  document.getElementById('search-input').addEventListener('input', applyFilters);
-  document.getElementById('category-select').addEventListener('change', applyFilters);
-  document.getElementById('level-select').addEventListener('change', applyFilters);
+  // Add event listeners with debounce
+  const searchInput = document.getElementById('search-input');
+  searchInput.addEventListener('input', () => {
+    showSearching(); // Show "Searching..." immediately
+    debounce(applyFilters, 300);
+  });
+
+  document.getElementById('category-select').addEventListener('change', () => {
+    showSearching();
+    applyFilters();
+  });
+
+  document.getElementById('level-select').addEventListener('change', () => {
+    showSearching();
+    applyFilters();
+  });
 }
 
 function parseLevel(levelStr) {
@@ -81,7 +95,19 @@ function parseLevel(levelStr) {
   return parseFloat(level);
 }
 
-function applyFilters() {
+function debounce(func, delay) {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    func();
+  }, delay);
+}
+
+async function applyFilters() {
+  if (isFiltering) return;
+  isFiltering = true;
+
+  await new Promise(resolve => setTimeout(resolve, 0)); // Allow UI to update
+
   const searchQuery = document.getElementById('search-input').value.toLowerCase();
   const selectedCategory = document.getElementById('category-select').value;
   const selectedLevel = document.getElementById('level-select').value;
@@ -125,6 +151,7 @@ function applyFilters() {
   });
 
   renderSongs(filteredSongs);
+  isFiltering = false;
 }
 
 function normalizeString(str) {
@@ -139,6 +166,9 @@ function renderSongs(songsToRender) {
     songList.innerHTML = '<p>No songs found.</p>';
     return;
   }
+
+  // Create a DocumentFragment to improve performance
+  const fragment = document.createDocumentFragment();
 
   songsToRender.forEach(song => {
     const songItem = document.createElement('div');
@@ -211,8 +241,10 @@ function renderSongs(songsToRender) {
     songItem.appendChild(songImage);
     songItem.appendChild(songInfo);
 
-    songList.appendChild(songItem);
+    fragment.appendChild(songItem);
   });
+
+  songList.appendChild(fragment);
 }
 
 function copyToClipboard(text) {
@@ -260,6 +292,11 @@ function showSongDetails(song) {
 
   modalOverlay.appendChild(modalContent);
   document.body.appendChild(modalOverlay);
+}
+
+function showSearching() {
+  const songList = document.getElementById('song-list');
+  songList.innerHTML = '<p>Searching...</p>';
 }
 
 // Initialize the application
