@@ -28,6 +28,24 @@ body {
     flex-direction: column;
     align-items: center;
     margin-bottom: 20px;
+  
+    /* Make the search section sticky */
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: #1a1a1a;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  
+  /* Add a bottom border to separate the search section */
+  .search-filters::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 1px;
+    background-color: #444;
+    margin-top: 10px;
   }
   
   #search-input {
