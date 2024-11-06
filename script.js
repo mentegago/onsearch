@@ -3,7 +3,7 @@
 let songs = [];
 let filteredSongs = [];
 let debounceTimer;
-let isFiltering = false;
+let worker;
 
 async function fetchSongs() {
   try {
@@ -21,6 +21,9 @@ async function fetchSongs() {
 
     initializeFilters();
     renderSongs(songs);
+
+    // Initialize the Web Worker after songs are loaded
+    initializeWorker();
   } catch (error) {
     console.error('Error fetching songs:', error);
   }
@@ -102,56 +105,20 @@ function debounce(func, delay) {
   }, delay);
 }
 
-async function applyFilters() {
-  if (isFiltering) return;
-  isFiltering = true;
-
-  await new Promise(resolve => setTimeout(resolve, 0)); // Allow UI to update
-
+function applyFilters() {
   const searchQuery = document.getElementById('search-input').value.toLowerCase();
   const selectedCategory = document.getElementById('category-select').value;
   const selectedLevel = document.getElementById('level-select').value;
 
-  filteredSongs = songs.filter(song => {
-    // Search filter
-    let searchMatch = false;
-    if (searchQuery === '') {
-      searchMatch = true;
-    } else {
-      const lowerSearchQuery = searchQuery.toLowerCase();
-
-      // Normalize strings by removing spaces and special characters
-      const normalizedSearchQuery = normalizeString(lowerSearchQuery);
-
-      const titleMatch = song.title.toLowerCase().includes(lowerSearchQuery) ||
-        (song.title_sort && song.title_sort.toLowerCase().includes(lowerSearchQuery));
-
-      const artistMatch = song.artist.toLowerCase().includes(lowerSearchQuery);
-
-      const romajiTitleMatch = song.romaji_title && normalizeString(song.romaji_title.toLowerCase()).includes(normalizedSearchQuery);
-
-      const romajiArtistMatch = song.romaji_artist && normalizeString(song.romaji_artist.toLowerCase()).includes(normalizedSearchQuery);
-
-      const osrCodeMatch = song.osr_code && song.osr_code.toLowerCase() === lowerSearchQuery;
-
-      searchMatch = titleMatch || artistMatch || romajiTitleMatch || romajiArtistMatch || osrCodeMatch;
+  // Send filter parameters to the worker
+  worker.postMessage({
+    type: 'filter',
+    data: {
+      searchQuery,
+      selectedCategory,
+      selectedLevel
     }
-
-    // Category filter
-    const categoryMatch = selectedCategory ? song.category === selectedCategory : true;
-
-    // Level filter
-    let levelMatch = true;
-    if (selectedLevel) {
-      const levelKeys = ['lev_bas', 'lev_adv', 'lev_exc', 'lev_mas', 'lev_lnt'];
-      levelMatch = levelKeys.some(key => song[key] === selectedLevel);
-    }
-
-    return searchMatch && categoryMatch && levelMatch;
   });
-
-  renderSongs(filteredSongs);
-  isFiltering = false;
 }
 
 function normalizeString(str) {
@@ -297,6 +264,23 @@ function showSongDetails(song) {
 function showSearching() {
   const songList = document.getElementById('song-list');
   songList.innerHTML = '<p>Searching...</p>';
+}
+
+function initializeWorker() {
+  worker = new Worker('worker.js');
+
+  // Send the songs data to the worker
+  worker.postMessage({
+    type: 'init',
+    data: songs
+  });
+
+  worker.onmessage = function(event) {
+    const { type, data } = event.data;
+    if (type === 'filteredSongs') {
+      renderSongs(data);
+    }
+  };
 }
 
 // Initialize the application
