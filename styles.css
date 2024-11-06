@@ -9,17 +9,20 @@ body {
     font-family: 'Plus Jakarta Sans', sans-serif;
   }
   
+  /* Container */
   .container {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
   }
   
+  /* Heading */
   h1 {
     text-align: center;
     color: #ff69b4;
   }
   
+  /* Search Filters */
   .search-filters {
     display: flex;
     flex-direction: column;
@@ -40,6 +43,7 @@ body {
   .filters {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
     gap: 20px;
   }
   
@@ -60,18 +64,21 @@ body {
     border: none;
   }
   
+  /* Song List */
   #song-list {
     display: flex;
     flex-direction: column;
     gap: 20px;
   }
   
+  /* Song Item */
   .song-item {
     display: flex;
     background-color: #2a2a2a;
     border-radius: 10px;
     overflow: hidden;
     cursor: pointer;
+    flex-direction: row;
   }
   
   .song-image {
@@ -117,9 +124,11 @@ body {
     padding: 3px 8px;
     border-radius: 5px;
     margin-right: 5px;
+    margin-bottom: 5px;
     font-size: 14px;
   }
   
+  /* Request Button */
   .request-button {
     display: inline-block;
     margin-top: 15px;
@@ -137,6 +146,7 @@ body {
     background-color: #ff85c1;
   }
   
+  /* Popup Notification */
   #popup-notification {
     position: fixed;
     bottom: 20px;
@@ -167,7 +177,7 @@ body {
     background-color: #1a1a1a;
     margin: 50px auto;
     padding: 20px;
-    width: 80%;
+    width: 90%;
     max-width: 600px;
     border-radius: 10px;
     color: #fff;
@@ -191,5 +201,44 @@ body {
   .modal-content pre {
     white-space: pre-wrap;
     word-wrap: break-word;
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .filters {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .song-item {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .song-image {
+      flex: 0 0 auto;
+      padding: 10px 0;
+    }
+  
+    .song-image img {
+      width: 150px;
+      height: 150px;
+    }
+  
+    .song-info {
+      padding: 10px;
+      text-align: center;
+    }
+  
+    .song-levels {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+  
+    .request-button {
+      width: 100%;
+      margin-top: 10px;
+    }
   }
   
