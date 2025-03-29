@@ -7,6 +7,9 @@ let worker;
 
 async function fetchSongs() {
   try {
+    // Show loading overlay (already visible from HTML)
+    const loadingOverlay = document.getElementById('loading-overlay');
+    
     const response = await fetch('songs.json');
     songs = await response.json();
 
@@ -24,8 +27,20 @@ async function fetchSongs() {
 
     // Initialize the Web Worker after songs are loaded
     initializeWorker();
+    
+    // Hide loading overlay with a fade-out animation
+    loadingOverlay.classList.add('fade-out');
+    // Remove from DOM after animation completes
+    setTimeout(() => {
+      loadingOverlay.style.display = 'none';
+    }, 500); // Match the CSS transition duration
+    
   } catch (error) {
     console.error('Error fetching songs:', error);
+    // Show error message in loading overlay
+    const loadingContent = document.querySelector('.loading-content p');
+    loadingContent.textContent = 'Error loading songs. Please try refreshing the page.';
+    loadingContent.style.color = '#ff6b6b';
   }
 }
 
@@ -153,11 +168,6 @@ function renderSongs(songsToRender) {
       showSongDetails(song);
     });
 
-    // Add difficulty indicator
-    const difficultyIndicator = document.createElement('div');
-    difficultyIndicator.className = 'difficulty-indicator';
-    songItem.appendChild(difficultyIndicator);
-
     const songImage = document.createElement('div');
     songImage.className = 'song-image';
     const img = document.createElement('img');
@@ -168,6 +178,7 @@ function renderSongs(songsToRender) {
     const songInfo = document.createElement('div');
     songInfo.className = 'song-info';
 
+    // Create title area
     const title = document.createElement('h2');
     title.textContent = song.title;
     songInfo.appendChild(title);
@@ -179,39 +190,24 @@ function renderSongs(songsToRender) {
       songInfo.appendChild(romajiTitle);
     }
 
+    // Artist info
+    const artistContainer = document.createElement('div');
+    artistContainer.className = 'artist-container';
+    
     const artist = document.createElement('p');
     artist.textContent = `${song.artist}`;
-    songInfo.appendChild(artist);
+    artistContainer.appendChild(artist);
 
     if (song.romaji_artist) {
       const romajiArtist = document.createElement('p');
       romajiArtist.textContent = song.romaji_artist;
       romajiArtist.className = 'romaji';
-      songInfo.appendChild(romajiArtist);
+      artistContainer.appendChild(romajiArtist);
     }
+    
+    songInfo.appendChild(artistContainer);
 
-    // Add metadata like release time
-    const metadata = document.createElement('div');
-    metadata.className = 'song-metadata';
-    
-    // Format date as Xh ago or Xd ago
-    const now = new Date();
-    const songDate = song.dateObj;
-    const diffTime = Math.abs(now - songDate);
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
-    
-    const timeSpan = document.createElement('span');
-    timeSpan.className = 'time';
-    if (diffDays > 0) {
-      timeSpan.textContent = `${diffDays}d ago`;
-    } else {
-      timeSpan.textContent = `${diffHours}h ago`;
-    }
-    metadata.appendChild(timeSpan);
-    
-    songInfo.appendChild(metadata);
-
+    // Add level badges - always at the bottom of the card
     const levels = document.createElement('div');
     levels.className = 'song-levels';
 
@@ -227,14 +223,29 @@ function renderSongs(songsToRender) {
 
     songInfo.appendChild(levels);
 
+    // Add request button - always at the very bottom
     const requestButton = document.createElement('button');
     requestButton.className = 'request-button';
     requestButton.textContent = 'Request';
+
+    // Improved event handling for mobile
     requestButton.addEventListener('click', (event) => {
-      event.stopPropagation(); // Prevent triggering song click event
+      // Prevent any parent events from firing
+      event.preventDefault();
+      event.stopPropagation();
+      
       const osrCode = song.osr_code;
-      copyToClipboard(`!osr ${osrCode}`);
-      showPopup('Request code copied! Paste this into the streamer\'s chat.');
+      
+      try {
+        copyToClipboard(`!osr ${osrCode}`);
+        showPopup('Request code copied! Paste this into the streamer\'s chat.');
+      } catch (err) {
+        console.error('Error copying to clipboard:', err);
+        showPopup('Could not copy code. Please try again.');
+      }
+      
+      // Return false to ensure no bubbling
+      return false;
     });
 
     songInfo.appendChild(requestButton);
@@ -259,11 +270,26 @@ function copyToClipboard(text) {
 function showPopup(message) {
   const popup = document.getElementById('popup-notification');
   const popupMessage = document.getElementById('popup-message');
+  
+  // Clear any existing timeout
+  if (window.popupTimeout) {
+    clearTimeout(window.popupTimeout);
+  }
+  
   popupMessage.textContent = message;
   popup.classList.remove('hidden');
-  setTimeout(() => {
+  
+  // Keep popup visible longer on mobile devices
+  const isMobile = window.innerWidth <= 768;
+  const displayTime = isMobile ? 5000 : 3000; // 5 seconds on mobile, 3 seconds on desktop
+  
+  // Store timeout reference to clear it if needed
+  window.popupTimeout = setTimeout(() => {
     popup.classList.add('hidden');
-  }, 3000);
+  }, displayTime);
+  
+  // Force browser to recognize the popup is visible
+  popup.offsetHeight;
 }
 
 function showSongDetails(song) {

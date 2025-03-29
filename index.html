@@ -10,13 +10,25 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <!-- Loading overlay -->
+  <div id="loading-overlay" class="loading-overlay">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <p>Downloading song list...</p>
+    </div>
+  </div>
+
   <div class="container">
     <h1>O.N.S.E.A.R.C.H.</h1>
+    
     <div class="search-filters">
-      <div class="search-container" style="display: flex;">
+      <!-- Search bar spanning the full width -->
+      <div class="search-container">
         <input type="text" id="search-input" placeholder="Search by title, artist, or osr code">
         <button class="search-button">Search</button>
       </div>
+      
+      <!-- Category and Level filters below -->
       <div class="filters">
         <div class="filter-category">
           <label for="category-select">Category:</label>
@@ -32,6 +44,7 @@
         </div>
       </div>
     </div>
+    
     <div id="song-list"></div>
   </div>
 
