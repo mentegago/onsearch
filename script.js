@@ -81,6 +81,13 @@ function initializeFilters() {
     debounce(applyFilters, 300);
   });
 
+  // Add event listener for search button
+  const searchButton = document.querySelector('.search-button');
+  searchButton.addEventListener('click', () => {
+    showSearching();
+    applyFilters();
+  });
+
   document.getElementById('category-select').addEventListener('change', () => {
     showSearching();
     applyFilters();
@@ -146,6 +153,11 @@ function renderSongs(songsToRender) {
       showSongDetails(song);
     });
 
+    // Add difficulty indicator
+    const difficultyIndicator = document.createElement('div');
+    difficultyIndicator.className = 'difficulty-indicator';
+    songItem.appendChild(difficultyIndicator);
+
     const songImage = document.createElement('div');
     songImage.className = 'song-image';
     const img = document.createElement('img');
@@ -168,7 +180,7 @@ function renderSongs(songsToRender) {
     }
 
     const artist = document.createElement('p');
-    artist.textContent = `Artist: ${song.artist}`;
+    artist.textContent = `${song.artist}`;
     songInfo.appendChild(artist);
 
     if (song.romaji_artist) {
@@ -177,6 +189,28 @@ function renderSongs(songsToRender) {
       romajiArtist.className = 'romaji';
       songInfo.appendChild(romajiArtist);
     }
+
+    // Add metadata like release time
+    const metadata = document.createElement('div');
+    metadata.className = 'song-metadata';
+    
+    // Format date as Xh ago or Xd ago
+    const now = new Date();
+    const songDate = song.dateObj;
+    const diffTime = Math.abs(now - songDate);
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+    
+    const timeSpan = document.createElement('span');
+    timeSpan.className = 'time';
+    if (diffDays > 0) {
+      timeSpan.textContent = `${diffDays}d ago`;
+    } else {
+      timeSpan.textContent = `${diffHours}h ago`;
+    }
+    metadata.appendChild(timeSpan);
+    
+    songInfo.appendChild(metadata);
 
     const levels = document.createElement('div');
     levels.className = 'song-levels';
