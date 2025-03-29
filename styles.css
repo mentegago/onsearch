@@ -120,7 +120,7 @@ body {
     position: relative;
     transition: transform 0.2s;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    height: 160px;
+    min-height: 180px;
   }
   
   .song-item:hover {
@@ -130,7 +130,7 @@ body {
   
   .song-image {
     flex: 0 0 150px;
-    height: 160px;
+    min-height: 180px;
   }
   
   .song-image img {
@@ -139,6 +139,7 @@ body {
     object-fit: cover;
   }
   
+  /* Song Info with improved text handling for long Japanese text */
   .song-info {
     flex: 1;
     padding: 12px;
@@ -146,13 +147,13 @@ body {
     flex-direction: column;
     position: relative;
     overflow: hidden;
-    padding-bottom: 45px;
+    padding-bottom: 55px; /* Increased to prevent cutoff with level badges */
     padding-left: 12px;
   }
   
   .song-info h2 {
     margin: 0 0 5px 0;
-    color: #5be05b; /* Green title */
+    color: #5be05b;
     font-size: 18px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -173,6 +174,7 @@ body {
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     max-height: 2.8em;
+    line-height: 1.4;
   }
   
   .song-info p.romaji {
@@ -187,11 +189,15 @@ body {
     -webkit-box-orient: vertical;
   }
   
+  /* Artist container with better spacing */
   .artist-container {
     margin-bottom: 10px;
     flex-grow: 1;
+    max-height: 60%; /* Limit height to ensure levels and button have space */
+    overflow: hidden;
   }
   
+  /* Improved level badges positioning */
   .song-levels {
     display: flex;
     flex-wrap: wrap;
@@ -205,12 +211,13 @@ body {
   
   .song-levels span {
     display: inline-block;
-    background-color: #4cd94c; /* Green level badges */
+    background-color: #4cd94c;
     color: #ffffff;
     padding: 3px 6px;
     border-radius: 3px;
     font-size: 12px;
     font-weight: bold;
+    margin-bottom: 3px; /* Add margin to prevent overlap */
   }
   
   .difficulty-indicator {
@@ -310,7 +317,7 @@ body {
     word-wrap: break-word;
   }
   
-  /* Responsive Styles */
+  /* Responsive adjustments for mobile */
   @media (max-width: 768px) {
     #song-list {
       grid-template-columns: 1fr;
@@ -332,12 +339,15 @@ body {
     }
   
     .song-info {
-      padding-bottom: 80px;
+      padding-bottom: 90px; /* Increase further for mobile */
     }
   
     .song-levels {
       bottom: 50px;
       width: calc(100% - 24px);
+      flex-wrap: wrap; /* Ensure wrapping of levels */
+      max-height: 40px; /* Limit height to prevent overflow */
+      overflow-y: auto; /* Allow scrolling if too many levels */
     }
   
     .request-button {
@@ -347,6 +357,7 @@ body {
   
     .artist-container {
       margin-bottom: 15px;
+      max-height: none; /* Remove height restriction on mobile */
     }
   }
   
